@@ -42,7 +42,7 @@ public class FileManager {
             if(Reader.hasNextLine())
             {
                 data = Reader.nextLine();
-                System.out.printf(data);
+                //System.out.printf(data);
                 Reader.close();
             }
             else
