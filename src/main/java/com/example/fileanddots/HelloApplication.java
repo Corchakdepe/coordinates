@@ -21,21 +21,15 @@ public class HelloApplication extends Application {
         stage.setTitle("Hello!");
         stage.setScene(scene);
         stage.show();
-
-
         Scanner fileUser = new Scanner(System.in);
         FileManager f = new FileManager("../dataset/berlin52.tsp");
         algorithm al = new algorithm();
         Punto[] puntos = f.getPuntos();
         Punto[] puntos2 = f.getPuntos();
 
-
         // Optionally, draw your dots and lines here
          v.DrawDots(puntos, pane);
-
          v.DrawLineExaust(puntos, line, pane);
-
          v.DrawLineforwardAlgorithm(puntos, line, pane);
     }
-
 }

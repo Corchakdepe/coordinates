@@ -38,7 +38,7 @@ public class algorithm {
         long duration = endTime - startTime; // Calculate the duration in nanoseconds
 
 
-        System.out.println("Execution time: " + duration / 1_000_000.0 + " milliseconds");
+        System.out.println("Exaustivo " + "("+sol[0].getX()+"," + sol[0].getY()+") "+"("+sol[1].getX()+"," + sol[1].getY()+") " + dmin + " " + t.length + " " +duration / 1_000_000.0 + " milliseconds");
         return sol;
     }
 
@@ -103,25 +103,63 @@ public class algorithm {
 
 
 
-
+    //version Luismi Modificada Ageu Depetris
     public Punto[] forwardAlgorithm(Punto[] t,int indexInitialDistance0, int indexInitialDistance1){
         long startTime = System.nanoTime();
-        heapSort(t);
-        Punto [] finalPointList = new Punto[t.length];
+        Punto [] finalPointList = t;
+        heapSort(finalPointList);
 
-        double pointsDistance = t[indexInitialDistance0].getX() - t[indexInitialDistance1].getX();
+
+        double pointsDistance = distanciaxy(finalPointList[indexInitialDistance0],finalPointList[indexInitialDistance1]);
+        Punto[] closestPair = new Punto[] { finalPointList[indexInitialDistance0], finalPointList[indexInitialDistance1] };
+
         for (int i = 1; i<t.length; i++){
-            double pointsDistanceLoop = t[i].getX() - t[i-1].getX();
-            if (pointsDistanceLoop > pointsDistance){
-                finalPointList = Arrays.copyOf(t, i);            }
+            double pointsDistanceLoop = distanciaxy(finalPointList[i],finalPointList[i-1]);
+            if (pointsDistanceLoop < pointsDistance){
+                closestPair = new Punto[] { finalPointList[i - 1], finalPointList[i]};
+                pointsDistance = pointsDistanceLoop;
+            }
         }
         long endTime = System.nanoTime(); // Record the end time
 
         long duration = endTime - startTime; // Calculate the duration in nanoseconds
 
+        System.out.println("Poda " + "("+closestPair[0].getX()+"," + closestPair[0].getY()+") "+"("+closestPair[1].getX()+"," + closestPair[1].getY()+") " + pointsDistance + " " + t.length + " " +duration / 1_000_000.0 + " milliseconds");
 
-        System.out.println("Execution time: " + duration / 1_000_000.0 + " milliseconds");
-        return finalPointList;
+        return closestPair;
     }
+    //Version Chat
+    /*
+    public Punto[] forwardAlgorithm(Punto[] t, int indexInitialDistance0, int indexInitialDistance1) {
+        long startTime = System.nanoTime();
+
+        // Sort the points
+        Punto[] finalPointList = t;
+        heapSort(finalPointList);
+
+        // Set the initial points and distance
+        double pointsDistance = distanciaxy(finalPointList[indexInitialDistance0], finalPointList[indexInitialDistance1]);
+        Punto[] closestPair = new Punto[] { finalPointList[indexInitialDistance0], finalPointList[indexInitialDistance1] };
+
+        // Iterate through the sorted points to find the closest pair
+        for (int i = 1; i < t.length; i++) {
+            double pointsDistanceLoop = distanciaxy(finalPointList[i], finalPointList[i - 1]);
+            if (pointsDistanceLoop < pointsDistance) {
+                // Update the closest pair and the minimum distance
+                closestPair = new Punto[] { finalPointList[i - 1], finalPointList[i] };
+                pointsDistance = pointsDistanceLoop;
+            }
+        }
+
+        long endTime = System.nanoTime(); // Record the end time
+        long duration = endTime - startTime; // Calculate the duration in nanoseconds
+
+        System.out.println("Closest pair: (" + closestPair[0].getX() + ", " + closestPair[0].getY() + ") and ("
+                + closestPair[1].getX() + ", " + closestPair[1].getY() + ") with distance "
+                + pointsDistance + " in " + duration / 1_000_000.0 + " milliseconds");
+
+        return closestPair;
+    }*/
+
 
 }
