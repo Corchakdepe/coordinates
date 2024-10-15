@@ -1,4 +1,5 @@
 package com.example.fileanddots;
+import javafx.scene.layout.Background;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.layout.Pane;
@@ -36,6 +37,7 @@ public class View {
         ;// Set the line color to red
         closestLine.setStrokeWidth(7);     // Set the line width
         pane.getChildren().add(closestLine);  // Add the line to the pane
+
     }
     public void DrawLineforwardAlgorithm(Punto[] puntos, Line line,Pane pane)
     {
@@ -52,14 +54,22 @@ public class View {
         pane.getChildren().add(closestLine);  // Add the line to the pane
     }
 
-    /*public void DrawLineDevide(Punto[] puntos, Line line,Pane pane)
+    public void DrawLineDevide(Punto[] puntos, Line line,Pane pane)
     {
-        Punto[] closestPair = al.Devide(puntos, 0, puntos.length - 1);
+
+        Label descriptionLabel = new Label("Divide");
+        descriptionLabel.setTextFill(Color.BLUE); // Set text color
+        descriptionLabel.setLayoutX(700); // X position
+        descriptionLabel.setLayoutY(60); // Y position
+        pane.getChildren().add(descriptionLabel);
+        Punto[] closestPair = al.llamada(puntos);
         Line closestLine = new Line(closestPair[0].getX(), closestPair[0].getY(), closestPair[1].getX(), closestPair[1].getY());
         closestLine.setStroke(Color.BLUE);  // Set the line color to red
         closestLine.setStrokeWidth(2);     // Set the line width
         pane.getChildren().add(closestLine);  // Add the line to the pane
-    }*/
 
 
+
+
+        }
 }

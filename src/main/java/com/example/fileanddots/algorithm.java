@@ -1,10 +1,19 @@
 package com.example.fileanddots;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import static java.lang.Math.sqrt;
 
 public class algorithm {
+
+    private Punto[] puntos = null;
+
+    ArrayList<Punto> worstCaseList = null;
+    public static int firstPoint,secondPoint;
+    private static boolean betterCase, worstCase;
+    private static double middleLine,leftDistance, rightDistance;
+
 
     public static double distanciaxy(Punto a, Punto b)
     {
@@ -16,6 +25,7 @@ public class algorithm {
     {
         long startTime = System.nanoTime();
         Punto[] sol = new Punto[2];
+        int counter = 0;
         sol[0] = t[i];  // First point
         sol[1] = t[i + 1];  // Second point
         // Initialize the minimum distance as the distance between the first two points
@@ -31,14 +41,16 @@ public class algorithm {
                     sol[0] = t[a];
                     sol[1] = t[b];
                 }
+                counter++;
             }
+
         }
         long endTime = System.nanoTime(); // Record the end time
 
         long duration = endTime - startTime; // Calculate the duration in nanoseconds
 
 
-        System.out.println("Exaustivo " + "("+sol[0].getX()+"," + sol[0].getY()+") "+"("+sol[1].getX()+"," + sol[1].getY()+") " + dmin + " " + t.length + " " +duration / 1_000_000.0 + " milliseconds");
+        System.out.println("Exaustivo " + "("+sol[0].getX()+"," + sol[0].getY()+") "+"("+sol[1].getX()+"," + sol[1].getY()+") " + dmin + " " + counter + " " +duration / 1_000_000.0 + " milliseconds");
         return sol;
     }
 
@@ -104,36 +116,42 @@ public class algorithm {
 
 
     //version Luismi Modificada Ageu Depetris
+    /*
     public Punto[] forwardAlgorithm(Punto[] t,int indexInitialDistance0, int indexInitialDistance1){
-        long startTime = System.nanoTime();
+
+        int counter = 0;
         Punto [] finalPointList = t;
         heapSort(finalPointList);
-
+        long startTime = System.nanoTime();
 
         double pointsDistance = distanciaxy(finalPointList[indexInitialDistance0],finalPointList[indexInitialDistance1]);
         Punto[] closestPair = new Punto[] { finalPointList[indexInitialDistance0], finalPointList[indexInitialDistance1] };
 
         for (int i = 1; i<t.length; i++){
             double pointsDistanceLoop = distanciaxy(finalPointList[i],finalPointList[i-1]);
-            if (pointsDistanceLoop < pointsDistance){
-                closestPair = new Punto[] { finalPointList[i - 1], finalPointList[i]};
-                pointsDistance = pointsDistanceLoop;
+            if (pointsDistanceLoop > pointsDistance){
+                finalPointList = Arrays.copyOf(closestPair, i);
+
             }
+
+            counter++;
         }
         long endTime = System.nanoTime(); // Record the end time
 
         long duration = endTime - startTime; // Calculate the duration in nanoseconds
 
-        System.out.println("Poda " + "("+closestPair[0].getX()+"," + closestPair[0].getY()+") "+"("+closestPair[1].getX()+"," + closestPair[1].getY()+") " + pointsDistance + " " + t.length + " " +duration / 1_000_000.0 + " milliseconds");
+        System.out.println("Poda " + "("+closestPair[0].getX()+"," + closestPair[0].getY()+") "+"("+closestPair[1].getX()+"," + closestPair[1].getY()+") " + pointsDistance + " " + counter + " " +duration / 1_000_000.0 + " milliseconds");
 
         return closestPair;
-    }
-    //Version Chat
-    /*
+    }*/
+
+
+
     public Punto[] forwardAlgorithm(Punto[] t, int indexInitialDistance0, int indexInitialDistance1) {
         long startTime = System.nanoTime();
 
         // Sort the points
+        int counter = 0;
         Punto[] finalPointList = t;
         heapSort(finalPointList);
 
@@ -143,6 +161,7 @@ public class algorithm {
 
         // Iterate through the sorted points to find the closest pair
         for (int i = 1; i < t.length; i++) {
+            counter++;
             double pointsDistanceLoop = distanciaxy(finalPointList[i], finalPointList[i - 1]);
             if (pointsDistanceLoop < pointsDistance) {
                 // Update the closest pair and the minimum distance
@@ -150,16 +169,103 @@ public class algorithm {
                 pointsDistance = pointsDistanceLoop;
             }
         }
-
         long endTime = System.nanoTime(); // Record the end time
         long duration = endTime - startTime; // Calculate the duration in nanoseconds
+        System.out.println("Poda " + "("+closestPair[0].getX()+"," + closestPair[0].getY()+") "+"("+closestPair[1].getX()+"," + closestPair[1].getY()+") " + pointsDistance + " " + counter + " " +duration / 1_000_000.0 + " milliseconds");
+        return closestPair;
+    }
 
-        System.out.println("Closest pair: (" + closestPair[0].getX() + ", " + closestPair[0].getY() + ") and ("
-                + closestPair[1].getX() + ", " + closestPair[1].getY() + ") with distance "
-                + pointsDistance + " in " + duration / 1_000_000.0 + " milliseconds");
+
+
+    public void worstCaseFunction(Punto[] pointList){
+        double dmin;
+        if (this.leftDistance < this.rightDistance){
+            dmin = this.leftDistance;
+        }else{
+            dmin = this.rightDistance;
+        }
+        double minCordX = middleLine - dmin;
+        double maxCordX = middleLine + dmin;
+
+        for (int i = 1; i<pointList.length; i++){
+
+            if (pointList[i].getX() > minCordX && pointList[i].getX() < maxCordX){
+                worstCaseList.add(pointList[i]);
+            }
+        }
+    }
+
+    public  Punto[] forwardAlgorithmDiv(Punto[] pointList){
+        //NO LLAMAR ANTES QUE A GETDISTANCEPOINTS
+        //RECONOCE EN QUE ZONA SE SITUAN DICHOS PUNTOS DE MENOR DISTANCIA
+        //INICIALIZA LOS BOOLEANOS PARA RECONOCER EL CASO EN EL QUE ESTAMOS Y GUARDA LAS DISTANCIAS DI Y DD DEL ENUNCIADO
+        int indexToDivide = pointList.length;
+        indexToDivide /= 2;
+        Punto [] firstPart = Arrays.copyOfRange(pointList, 0, indexToDivide);
+        Punto [] secondPart = Arrays.copyOfRange(pointList, indexToDivide, pointList.length);
+        middleLine = pointList[indexToDivide].getX();
+        System.out.println("Primer punto: " + firstPoint + " Segundo punto: " + secondPoint + " Middle point: " + indexToDivide);
+        if (firstPoint < indexToDivide && secondPoint < indexToDivide){
+            System.out.println("Entramos al mejor caso izquierda");
+            betterCase = true;
+            worstCase = false;
+            leftDistance = distanciaxy( pointList[firstPoint], pointList[secondPoint]);
+
+        }else if (firstPoint > indexToDivide && secondPoint > indexToDivide){
+            System.out.println("Entramos al mejor caso derecha");
+            betterCase = true;
+            worstCase = false;
+            rightDistance = distanciaxy(pointList[firstPoint], pointList[secondPoint]);
+
+        }else{
+            System.out.println("Entramos al peor caso");
+            betterCase = false;
+            worstCase = true;
+            worstCaseFunction(pointList);
+        }
+        return pointList;
+    }
+
+
+
+    public static void getMinDistancePoints(Punto[] pointList){
+        //GUARDA EN LOS ATRIBUTOS FIRST POINT Y SECOND POINT PERTENECIENTES A LA CLASE
+        //LOS PUNTOS CON LA MENOR DISTANCIA.
+        //POSTERIORMENTE LLAMARIAMOS A FORWARDALGORITHM QUE
+
+        double minDistance = 0;
+
+        for (int i = 1; i<pointList.length; i++){
+            double distance = distanciaxy(pointList[i-1], pointList[i]);
+            if (i == 1){
+                minDistance = distance;
+            }else if(distance < minDistance){
+                minDistance = distance;
+                firstPoint = i-1;
+                secondPoint = i;
+
+            }
+        }
+    }
+
+    public Punto[] llamada(Punto[] p)
+    {
+        Punto [] closestPair = p;
+
+
+        getMinDistancePoints(closestPair);
+        closestPair = forwardAlgorithmDiv(closestPair);
+        //EN CASO DE ENTRAR EN PEOR CASO, TENDRIAMOS QUE LLAMAR AL EXHAUSTIVO SOBRE LA LISTA WORSTCASELIST QUE ES LA FINAL DEL PEOR CASO
+        if (worstCase){
+            System.out.println("Entramos a exhaustivo peor caso");
+            exaustivo(closestPair,0, closestPair.length-1);
+            //LLAMADA A EXHAUSTIVO SOBRE ARRAYLIST
+        }
+        System.out.println("Poda " + "("+closestPair[0].getX()+"," + closestPair[0].getY()+") "+"("+closestPair[1].getX()+"," + closestPair[1].getY()+") ");
 
         return closestPair;
-    }*/
+    }
+
 
 
 }

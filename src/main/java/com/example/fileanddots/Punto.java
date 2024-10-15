@@ -15,8 +15,11 @@ public class Punto {
         this.y = y;
     }
 
-
-
+    public Punto(int pointX, int pointY)
+    {
+        this.x = pointX;
+        this.y = pointY;
+    }
 
 
     public double getX() {
