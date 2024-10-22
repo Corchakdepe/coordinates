@@ -85,6 +85,28 @@ public class FileManager {
 
 
     }
+
+    public  void pointCreator(int puntos){
+
+
+        this.puntos = new Punto[puntos];
+
+        for(int i = 0; i<puntos; i++){
+            Random ran = new Random();
+            int point_x = ran.nextInt(0,1920);
+            int point_y = ran.nextInt(0,1080);
+            Punto point = new Punto(point_x, point_y);
+            this.puntos[i] = point;
+        }
+
+
+    }
+
+
+
+
+
+
     public void fileWriter() throws IOException
     {
         Scanner scan = new Scanner(System.in);
